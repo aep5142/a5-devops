@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<style>
+    table {
+  border-collapse: collapse;
+  border: 1px solid rgb(140 140 140);
+  font-family: sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+    }
+
+    thead th,
+    thead td {
+    background-color: rgb(228 240 245);
+    font-weight: bold;
+    border: 1px solid rgb(140 140 140);
+    }
+
+    tbody th,
+    tbody td,
+    tfoot th,
+    tfoot td {
+    border: 1px solid rgb(160 160 160);
+    padding: 8px 10px;
+    font-weight: normal;
+    }
+
+    img {
+        border: 1px solid gray
+    }
+</style>
+
+<body>
+    <h2>
+        Question 1: Explain the differences between development, integration, staging, and production environments.
+    </h2>
+
+    <h3>
+        Answer:
+    </h3>
+
+    <table>
+        <thead>
+            <!-- Header of the table-->
+            <tr>
+                <th scope="col">How it works</th>
+                <th scope="col">Advantages</th>
+                <th scope="col">Disadvantages</th>
+                <th scope="col">When to use</th>
+                <th scope="col">Links</th>
+        </thead>
+        <tbody>
+            </tr>
+            <!-- Recreate deployment-->
+            <tr>
+                <th scope="row">Recreate deployment</th>
+                <th>
+                    Basically, before creating new instances with updated configurations,
+                    it shut downs all existing instances provoking a temporary runtime.
+                </th>
+                <th>
+                    It ensures a new and clean environment, which will be exactly what was in the new pods.
+                </th>
+                <th>
+                    As mentioned before, it's impossible to do a transition without a downtime, meaning the instances/features
+                    can not be updated without shutting down them.
+                </th>
+                <th>
+                    Best use case is when the nature of the instance allows to work in batchs and doesn't need a 
+                    totally continuous service. Then, it allows to shutdown the system to create the new environment.
+                </th>
+                <th>
+                    <a href="https://medium.com/@muppedaanvesh/rolling-update-recreate-deployment-strategies-in-kubernetes-%EF%B8%8F-327b59f27202">Link</a>
+                </th>
+            </tr>
+            
+            <!-- Rolling Update-->
+            <tr>
+                <th scope="row">Rolling Update</th>
+                <th>
+                    Works by updating each post such that the system never shuts down. Basically, it redirects traffic 
+                    out of the pod that needs to be updated making the other pods to handle more requests. When the 
+                    pod is done updating, it will start handling requests while another pod takes the turn to update.
+                </th>
+                <th>
+                    Keeps availability of the system, it allows a gradual introduction of a new version making easier
+                    to keep track of any issues that may come.
+                </th>
+                <th>
+                    Rolling back might be challenging because you'll need to rollback certain instances, not the whole
+                    environment. Also, the service operates in inconsistent states while updating all pods.
+                </th>
+                <th>
+                    When having a service that needs continuous availability. This strategy allows to keep the service 
+                    running while in the back, updates are happening.
+                </th>
+                <th>
+                    <a href="https://medium.com/@muppedaanvesh/rolling-update-recreate-deployment-strategies-in-kubernetes-%EF%B8%8F-327b59f27202">Link</a>
+                    <a href="https://kubernetes.io/docs/tutorials/kubernetes-basics/update/update-intro/#rolling-updates-overview">Link</a>
+                    <a href="https://octopus.com/devops/software-deployments/rolling-deployment/">Link</a>
+                </th>
+            </tr>
+
+            <!-- Row for Blue-Green deployment-->
+            <tr>
+                <th scope="row">Blue-Green deployment</th>
+                <th>
+                    You have two environments: Blue (old one) and Green (new one with the new version). After setting
+                    up the green environment, need to redirect all traffic to the new environment and keep track of it's 
+                    performance. If something wrong happens and need to rollback, you can switch back the traffic to the
+                    blue environment. 
+                </th>
+                <th>
+                    Since it relies only in traffic redirection, it allows a very high availability. It also allows 
+                    a very fast rollback process (also allows to deploy with more confidence). 
+                </th>
+                <th>
+                    Two environments running means almost double cost of direct operating costs. Also, needs more overhead
+                    to keep track of performance of new environment. The load balancer is also a thing, to know when and
+                    how to switch.
+                </th>
+                <th>
+                    For organizations or services with a very high demand for availability. Also, it's good for regulated
+                    companies that need to be compliant and need transparency when doing changes to the platform.
+                </th>
+                <th>
+                    <a href="https://octopus.com/devops/software-deployments/blue-green-deployment/">Link</a>
+                </th>
+            </tr>
+
+            <!-- Row for Canary deployment-->
+            <tr>
+                <th scope="row">Canary deployment</th>
+                <th>
+                    Works by releasing a new version only to a subset of all users. It's not a all-in upgrade, but a
+                    very partial one.
+                </th>
+                <th>
+                    It mitigates risk by rolling out the updates to a subset of users. It keep the update controlled, and 
+                    if it fails, it will only do so for a small subset of all users. It's cost effective since it
+                    doesnt need two environments to run
+                </th>
+                <th>It doesn't catch all problems since its only targeted to a subset of users, which may not be
+                    handling the service as the total user population. It need a strategy for which users the new updates
+                    will be rolled out.
+                    
+                </th>
+                <th>
+                    Very useful for testing technical stability of new features, benchmark performance, and others.
+                </th>
+                <th>
+                    <a href="https://octopus.com/devops/software-deployments/blue-green-deployment/">Link</a>
+                </th>
+            </tr>
+
+            <!-- Row for A/B Testing-->
+            <tr>
+                <th scope="row">A/B Testing</th>
+                <th>
+                    Like Canary Deployment, it releases new features to a subset of all users. It works by releasing
+                    and then record performance of the old v/s the new performance. After it, management can decide with
+                    data in hand if developing completely or deploying completely the new feature. It's mostly related 
+                    with UI of the service or the app.
+                </th>
+                <th>
+                    Cost effective to check value of new features. Provides real data on what happened with the new version
+                    vs the old version.
+                </th>
+                <th>
+                    Need strategy of redirection. It doesn't provide any explanation on why things happened with the new
+                    version, but only <i>what happened</i>.
+                </th>
+                <th>
+                    Most of the times use it to try UI things. At my old job we used it a lot to try new wording for a 
+                    message we wanted to communicate, pictures, colors, etc.
+                </th>
+                <th>
+                    <a href="https://blog.logrocket.com/product-management/ab-testing-pros-and-cons/">Link</a>
+                </th>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>
+        Question 2: Jenkins Agent Configuration
+    </h2>
+
+    <ul>
+        <li>
+            Screenshots of Jenkins agent configuration and status
+            <br>
+            <br>
+            <img src="screenshots/21.png" width="1000">
+            <br>
+            <img src="screenshots/22.png" width="1000">
+        </li>
+        <br>
+        <br>
+        <li>
+            Jenkins agent labels configuration
+            <br>
+            <br>
+            <img src="screenshots/23.png" width="1000">
+        </li>
+    </ul>
+    <br>
+    <br>
+    <h2>
+        Question 3: Source Control Integration
+    </h2>
+    <ul>
+        <li>
+            Webhook configuration screenshots from Git repository
+            <br>
+            <br>
+            <img src="screenshots/31.png" width="1000">
+            <br>
+            <img src="screenshots/32.png" width="1000">
+        </li>
+        <br>
+        <li>
+            Jenkinsfile showing branch-specific pipeline logic
+            <br>
+            <br>
+            <img src="screenshots/33.png" width="1000">
+        </li>
+        <br>
+        <li>
+            Screenshot of webhook triggering pipeline runs
+            <br>
+            <img src="screenshots/34.png" width="1000">
+            <br>
+            <img src="screenshots/35.png" width="1000">
+            <br>
+        </li>
+    </ul>
+    
+    <h2>
+        Question 4: Build and Package
+    </h2>
+
+    <ul>
+        <li>
+            Build logs showing successful artifact creation:
+            <br>
+            <img src="screenshots/41.png" width="1000">
+            <br>
+            <img src="screenshots/42.png" width="1000">
+
+        </li>
+        <br>
+        <br>
+        <li>
+            Screenshots of versioned artifacts in Jenkins:
+            <br>
+            <img src="screenshots/43.png" width="1000">
+        </li>
+        <br>
+        <br>
+        <li>
+            Build configuration in Jenkinsfile:
+            <br>
+            <img src="screenshots/44.png" width="1000">
+        </li>
+    </ul>
+    <br>
+    <br>
+
+    <h2>
+        Question 5: Code Quality Analysis
+    </h2>
+
+    <ul>
+        <li>
+            SonarQube project configuration screenshots
+            <br>
+            <img src="screenshots/51.png" width="1000">
+        </li>
+        <br>
+        <li>
+            SonarQube analysis reports with quality metrics:
+            <br>
+            <img src="screenshots/52.png" width="1000">
+        </li>
+        <br>
+        <li>
+            Quality gate configuration and pipeline failure evidence when standards not met
+            <br>
+            <li>
+                Here I set only 10 bugs:
+                <br>
+                <br>
+                <img src="screenshots/53.png" width="1000">
+                <img src="screenshots/54.png" width="1000">
+                <img src="screenshots/544.png" width="1000">
+            </li>
+            <br>
+            <br>
+            <li>
+                Here I relaxed all measures to pass the test:
+                <br>
+                <br>
+                <img src="screenshots/55.png" width="1000">
+                <img src="screenshots/56.png" width="1000">
+            </li>
+        </li>
+    </ul>
+
+    <h2>
+        Question 6: Database Management
+    </h2>
+
+    <ul>
+        <li>
+            Database schema scripts (SQL files or equivalent)
+            <br>
+            <br>
+            <br>   
+            <img src="screenshots/61.png" width="500">
+        </li>
+        <br>
+        <br>
+        <li>
+            Test data seeding scripts
+            <br>
+            <br>
+            <img src="screenshots/62.png" width="500">
+        </li>
+        <br>
+        <br>
+        <li>
+            Screenshots showing successful database creation and seeding
+            <br>
+            <br>
+            <img src="screenshots/63.png" width="500">
+        </li>
+    </ul>
+    <br>
+    <br>
+    <h2>
+        Question 7: End-to-End Testing
+    </h2>
+    <br>
+    <ul>
+        <li>
+            End-to-end test code/scripts
+            <br>
+            <br>
+            <img src="screenshots/71.png" width="500">
+        </li>
+        <br>
+        <br>
+        <li>
+            Test execution screenshots 
+            <br>
+            <br>
+            <img src="screenshots/72.png" width="500">
+        </li>
+        <br>
+        <br>
+        <li>
+            Generated test reports (HTML, XML, or similar format)
+            <br>
+            <br>
+            <img src="screenshots/73.png" width="500">
+        </li>
+    </ul>
+    <br>
+    <br>
+    <h2>
+        Question 9: Slack Notifications
+    </h2>
+    <br>
+    <ul>
+        <li>
+            Notification configuration in Jenkins
+            <br>
+            <br>
+            <img src="screenshots/91.png" width="500">
+        </li>
+        <br>
+        <br>
+        <li>
+            Screenshots of successful deployment notifications
+            <br>
+            <br>
+            <img src="screenshots/92.png" width="500">
+        </li>
+        <br>
+        <br>
+        <li>
+            Screenshots of failure notifications with error details
+            <br>
+            <br>
+            <img src="screenshots/93.png" width="500">
+        </li>
+    </ul>
+</body>
