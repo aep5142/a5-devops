@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: green
+spec:
+  replicas: 2
+  selector: # Telling the Deployment object how to / which manage pods
+    matchLabels:
+      app: app
+      version: green
+  template: # This is how pods are created
+    metadata:
+      labels:
+        app: app
+        version: green
+    
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:mainline-alpine3.23-perl
+        
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: 80
+          #   initialDelaySeconds: 1
+          #   periodSeconds: 10
+          #   failureThreshold: 3
+          
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 1
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+

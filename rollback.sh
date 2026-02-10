@@ -1,0 +1,1 @@
+kubectl patch svc blue-green-service -p '{"spec":{"selector":{"app":"app","version":"blue"}}}'
