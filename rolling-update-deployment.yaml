@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: roll-update-app
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector: # Telling the Deployment object how to / which manage pods
+    matchLabels:
+      app: roll-update-app
+  template: # This is how pods are created
+    metadata:
+      labels:
+        app: roll-update-app
+    
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:stable-alpine3.23-perl
+        
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+
