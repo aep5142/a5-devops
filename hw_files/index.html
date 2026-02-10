@@ -43,6 +43,7 @@
         <thead>
             <!-- Header of the table-->
             <tr>
+                <th scope="col">Strategy</th>
                 <th scope="col">How it works</th>
                 <th scope="col">Advantages</th>
                 <th scope="col">Disadvantages</th>
@@ -182,25 +183,34 @@
     </table>
 
     <h2>
-        Question 2: Jenkins Agent Configuration
+        Question 2: Rolling Update Implementation
     </h2>
 
     <ul>
         <li>
-            Screenshots of Jenkins agent configuration and status
+            Get deployments/pods showing initial state
+            <br>
+            <img src="screenshots/01-initial-deployment.png" width="1000">
             <br>
             <br>
-            <img src="screenshots/21.png" width="1000">
+            Rollout status during update
             <br>
-            <img src="screenshots/22.png" width="1000">
-        </li>
-        <br>
-        <br>
-        <li>
-            Jenkins agent labels configuration
+            <img src="screenshots/02-update-in-progress.png" width="1000">
             <br>
             <br>
-            <img src="screenshots/23.png" width="1000">
+            Get pods showing successful update
+            <br>
+            <img src="screenshots/03-update-completed.png" width="1000">
+            <br>
+            <br>
+            Rollout undo command and result
+            <br>
+            <img src="screenshots/04-rollback-executed.png" width="1000">
+            <br>
+            <br>
+            Curl or browser showing the service is accessible
+            <br>
+            <img src="screenshots/05-service-endpoint.png" width="1000">
         </li>
     </ul>
     <br>
